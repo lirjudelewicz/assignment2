@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
+import generateToken from "../utils/authUtils";
 
 class AuthController {  
 
@@ -19,6 +20,9 @@ class AuthController {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             const user = await userModel.create({ username, email, password: hashedPassword });
+            const tokens = generateToken(user._id.toString());
+            user.refreshTokens.push(tokens.refreshToken);
+            await user.save();
             res.status(201).json(user);
 
         }catch(err: any){
@@ -43,6 +47,10 @@ class AuthController {
                 res.status(401).send("Unauthorized - Incorrect password");
                 return;
             }
+
+            const tokens = generateToken(user._id.toString());
+            user.refreshTokens.push(tokens.refreshToken);
+            await user.save();
             res.status(200).json(user);
 
         }catch(err: any){
