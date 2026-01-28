@@ -6,19 +6,19 @@ class AuthController {
 
     async register(req: Request, res: Response) {
         try{
-            const { email, password } = req.body;
+            const { username, email, password } = req.body;
             if ( !email || !password) {
-                res.status(400).send(`Bad Request - email, password are required`);
+                res.status(400).send(`Bad Request - username, email, password are required`);
                 return;
             }
-            const userExists = await userModel.findOne({ email });
+            const userExists = await userModel.findOne({ $or: [ { username }, { email } ] });
             if (userExists) {
-                res.status(409).send("Conflict - Email already exists");
+                res.status(409).send("Conflict - Username or Email already exists");
                 return;
             }
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
-            const user = await userModel.create({ email, password: hashedPassword });
+            const user = await userModel.create({ username, email, password: hashedPassword });
             res.status(201).json(user);
 
         }catch(err: any){
@@ -28,12 +28,12 @@ class AuthController {
 
     async login(req: Request, res: Response) {
         try{
-            const { email, password } = req.body;
-            if (!email || !password) {
+            const { username, email, password } = req.body;
+            if (!email && !username || !password) {
                 res.status(400).send(`Bad Request - email and password are required`);
                 return;
             }
-            const user = await userModel.findOne({ email });
+            const user = await userModel.findOne({ $or: [ { username }, { email } ] });
             if (!user) {
                 res.status(404).send("Not Found - User does not exist");
                 return;
