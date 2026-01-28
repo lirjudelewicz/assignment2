@@ -85,7 +85,37 @@ class AuthController {
         } catch (err) {
             return res.status(401).send("Invalid refresh token");
         }
-}
+
+    }
+    async logout(req: Request, res: Response) {
+        try {
+            const {authorization} = req.headers;
+            if (!authorization) {
+                return res.status(400).send("Refresh token is required");
+            }
+            const refreshToken = authorization.split(" ")[1];
+            if (!refreshToken) {
+                return res.status(400).send("Refresh token is required");
+            }
+            const secret = process.env.JWT_SECRET || "default_secret";
+            const decoded = jwt.verify(refreshToken, secret) as { _id: string };
+            const user = await userModel.findById(decoded._id);
+            if (!user) {
+                return res.status(401).send("Invalid refresh token");
+            }
+            if (!user.refreshTokens.includes(refreshToken)) {
+                user.refreshTokens = [];
+                await user.save();
+                console.log(" **** Possible token theft for user:", user._id);
+                return res.status(401).send("Invalid refresh token");
+            }
+            user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+            await user.save();
+            res.status(200).json({ message: "Logged out successfully" });
+        } catch (err) {
+            return res.status(401).send("Invalid refresh token");
+        }
+    }
 
 }
 export default new AuthController();
