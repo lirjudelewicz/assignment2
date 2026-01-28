@@ -37,6 +37,23 @@ class CommentController {
         }
         
     }
+
+    async update(req: Request, res: Response){
+        try{
+            const commentId = req.params.commentId;
+            const updatedData = req.body;
+            if(!commentId || !updatedData.postId || !updatedData.senderId || !updatedData.message){
+                res.statusCode = 400;
+                res.status(400).send(`Rejecting - commentId, postId, senderId, message are required`);
+                return;
+            }
+            const comment = await commentModel.findByIdAndUpdate(commentId, updatedData, {new: true});
+            console.log(`Succesfully updated comment id: [${commentId}]`);
+            res.json(comment);
+        }catch(err: any){
+            res.status(500).send(`Error reading comment ended with error: ${err.message}`);
+        }
+    }
 }
 
 export default new CommentController();
