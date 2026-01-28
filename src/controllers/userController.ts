@@ -64,5 +64,19 @@ class UserController{
             res.status(500).send(err.message);
         }
     }
+
+    async delete(req: Request, res: Response) {
+        try {
+            const { userId } = req.params;
+            const user = await userModel.findByIdAndDelete(userId);
+            if (!user) {
+                res.status(404).send("Not Found - User does not exist");
+                return;
+            }
+            res.status(200).send(`User with id ${userId} deleted successfully`);
+        } catch (err: any) {
+            res.status(500).send(err.message);
+        }
+    }
 }
 export default new UserController();
