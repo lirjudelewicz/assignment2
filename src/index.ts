@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import authRouter from "./routes/authRoutes";
+import userRouter from "./routes/userRoutes";
 import commentsRouter from "./routes/commentRoute";
 import postsRouter from "./routes/postRoutes";
 dotenv.config({path: "./.env"});
@@ -12,6 +14,8 @@ app.use(express.json());
 
 app.use("/comment", commentsRouter);
 app.use("/post", postsRouter);
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 const initApp = async () => {
     try{
