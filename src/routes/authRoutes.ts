@@ -3,5 +3,6 @@ import userController from "../controllers/authController";
 const authRouter = Router();
 
 authRouter.post("/register", userController.register.bind(userController));
+authRouter.post("/login", userController.login.bind(userController));
 
 export default authRouter;
