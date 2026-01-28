@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use("/comments", commentsRouter);
+app.use("/comment", commentsRouter);
 
 const initApp = async () => {
     try{

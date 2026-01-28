@@ -19,7 +19,24 @@ class CommentController {
         }catch(err: any){
             res.status(500).send(`Error creating comment ended with error: ${err.message}`);
         }
-}
+    }
+
+    async getById(req: Request, res: Response){
+        try{
+            const commentId = req.params.commentId;
+            if(!commentId){
+                res.statusCode = 400;
+                res.status(400).send(`Bad Request - commentId required`);
+                return;
+            }
+            const comment = await commentModel.findById(commentId);
+            console.log(`Succesfully got comment id: [${commentId}]`);
+            res.json(comment);
+        }catch(err: any){
+            res.status(500).send(`Error reading comment ended with error: ${err.message}`);
+        }
+        
+    }
 }
 
 export default new CommentController();
