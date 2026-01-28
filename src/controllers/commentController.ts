@@ -71,6 +71,22 @@ class CommentController {
         }
     }
 
+    async getCommentsByPostId(req: Request, res: Response){
+        try{
+            const postId = req.params.postId;
+            if(!postId){
+                res.statusCode = 400;
+                res.status(400).send(`Bad Request - postId required`);
+                return;
+            }
+            const comments = await commentModel.find({postId: postId}).sort({ createdAt: -1 });
+            res.json(comments);
+        }catch(err: any){
+            res.status(500).send(`Error deleting comment ended with error: ${err.message}`);
+        }
+    }
+
+
 }
 
 export default new CommentController();
