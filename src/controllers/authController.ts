@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
-import generateToken from "../utils/authUtils";
+import { generateToken, hashPassword } from "../utils/authUtils";
 
 class AuthController {  
 
@@ -17,8 +17,7 @@ class AuthController {
                 res.status(409).send("Conflict - Username or Email already exists");
                 return;
             }
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
+            const hashedPassword = await hashPassword(password);
             const user = await userModel.create({ username, email, password: hashedPassword });
             const tokens = generateToken(user._id.toString());
             user.refreshTokens.push(tokens.refreshToken);
