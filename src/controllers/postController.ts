@@ -1,8 +1,9 @@
+import { AuthRequest } from "../middleware/authMiddleware";
 import { postModel } from "../models/postModel";
 import { Request, Response } from "express";
 
 class PostController {
-    async create(req: Request, res: Response) {
+    async create(req: AuthRequest, res: Response) {
         try {
             const { userId, title, content } = req.body;
             if (!userId || !title || !content) {
@@ -53,7 +54,7 @@ class PostController {
         }
     }
 
-    async replace(req: Request, res: Response){
+    async replace(req: AuthRequest, res: Response){
         try {
             const { userId, title, content } = req.body;
             const postId = req.params.postId;
@@ -61,28 +62,43 @@ class PostController {
             res.status(400).send(`postId userId, title, content are required (full replace)`);
             return;
             }
-            const post = await postModel.findByIdAndUpdate(postId, { userId, title, content }, { new: true });
+            const post = await postModel.findById(postId);
             if (!post) {
                 res.status(404).send(`Post not found`);
                 return;
             }
-            res.json(post);
+            if (post.userId.toString() !== req.user?._id) {
+                res.status(404).send(`you ave no permissions to update post`);
+                return;
+            }
+            const updatedPost = await postModel.findByIdAndUpdate(postId, { userId, title, content }, { new: true });
+            res.json(updatedPost);
         } catch (err: any) {
             res.status(500).send(err.message);
         }
     }
 
-    async delete(req: Request, res: Response){
+    async delete(req: AuthRequest, res: Response){
         try {
             const postId = req.params.postId;
+            const userId = req.body.userId;
             if (!postId) {
                 res.status(400).send(`Bad Request - postId is required`);
                 return;
             }
-
-            const post = await postModel.findByIdAndDelete(postId);
-            
+            const post = await postModel.findById(postId);
             if (!post) {
+                res.status(404).send(`Post not found`);
+                return;
+            }
+            if (post.userId.toString() !== req.user?._id) {
+                res.status(404).send(`you ave no permissions to delete post`);
+                return;
+            }
+
+            const deletedPost = await postModel.findByIdAndDelete(postId);
+
+            if (!deletedPost) {
                 res.status(404).send(`Post not found`);
                 return;
             }
