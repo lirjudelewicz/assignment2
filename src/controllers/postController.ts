@@ -15,5 +15,24 @@ class PostController {
             res.status(500).send(err);
         }
     }
+
+    async getAll(req: Request, res: Response)  {
+        try {
+            if(req.query){
+                const posts = await postModel.find(req.query).sort({ createdAt: -1 });
+                res.json(posts);
+                return;
+            }else{
+                const allPosts = await postModel.find({});
+            if(!allPosts){
+                res.status(400).send(`There are no posts in the database`);
+                return;
+            }
+            res.json(allPosts);
+            }
+        } catch (err) {
+            res.status(500).send(err);
+        }
+    }
 }
 export default new PostController();
