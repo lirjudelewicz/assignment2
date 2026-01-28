@@ -1,0 +1,17 @@
+################################################################################
+# POSTS
+################################################################################
+###
+#Create Post
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
+  "senderId": "id1",
+  "title": "Post 1",
+  "content": "Hello from sender1"
+}
+
+###
+# Get All Posts  
+GET http://localhost:3000/post
