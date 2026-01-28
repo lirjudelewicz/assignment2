@@ -54,6 +54,23 @@ class CommentController {
             res.status(500).send(`Error reading comment ended with error: ${err.message}`);
         }
     }
+
+    async delete(req: Request, res: Response){
+        try{
+            const commentId = req.params.commentId;
+            if(!commentId){
+                res.statusCode = 400;
+                res.status(400).send(`Rejecting - commentId required`);
+                return;
+            }
+            const deletedComment = await commentModel.findByIdAndDelete(commentId);
+            console.log(`Succesfully deleted comment id: [${commentId}]`);
+            res.json(deletedComment);
+        }catch(err: any){
+            res.status(500).send(`Error deleting comment ended with error: ${err.message}`);
+        }
+    }
+
 }
 
 export default new CommentController();
