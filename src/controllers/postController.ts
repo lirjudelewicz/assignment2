@@ -44,7 +44,8 @@ class PostController {
             }
             const post = await postModel.findById(postId);
             if (!post) {
-            res.status(404).send(`Post not found`);
+                res.status(404).send(`Post not found`);
+                return;
             }
             res.json(post);
         } catch (err: any) {
@@ -62,9 +63,30 @@ class PostController {
             }
             const post = await postModel.findByIdAndUpdate(postId, { userId, title, content }, { new: true });
             if (!post) {
-            res.status(404).send(`Post not found`);
+                res.status(404).send(`Post not found`);
+                return;
             }
             res.json(post);
+        } catch (err: any) {
+            res.status(500).send(err.message);
+        }
+    }
+
+    async delete(req: Request, res: Response){
+        try {
+            const postId = req.params.postId;
+            if (!postId) {
+                res.status(400).send(`Bad Request - postId is required`);
+                return;
+            }
+
+            const post = await postModel.findByIdAndDelete(postId);
+            
+            if (!post) {
+                res.status(404).send(`Post not found`);
+                return;
+            }
+                res.json(post);
         } catch (err: any) {
             res.status(500).send(err.message);
         }
