@@ -47,9 +47,27 @@ class PostController {
             res.status(404).send(`Post not found`);
             }
             res.json(post);
-        } catch (err) {
-            res.status(500).send(err);
+        } catch (err: any) {
+            res.status(500).send(err.message);
         }
+    }
+
+    async replace(req: Request, res: Response){
+        try {
+            const { userId, title, content } = req.body;
+            const postId = req.params.postId;
+            if (!postId ||!userId || !title || !content) {
+            res.status(400).send(`postId userId, title, content are required (full replace)`);
+            return;
+            }
+            const post = await postModel.findByIdAndUpdate(postId, { userId, title, content }, { new: true });
+            if (!post) {
+            res.status(404).send(`Post not found`);
+            }
+            res.json(post);
+        } catch (err: any) {
+            res.status(500).send(err.message);
         }
+    }
 }
 export default new PostController();
