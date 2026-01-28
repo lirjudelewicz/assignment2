@@ -16,5 +16,24 @@ class UserController{
             res.status(500).send(err.message);
         }
     }
+
+    async getAll(req: Request, res: Response) {
+            try {
+                if(req.query){
+                    const users = await userModel.find(req.query).sort({ createdAt: -1 });
+                    res.json(users);
+                    return;
+                }else{
+                    const allUsers = await userModel.find({});
+                if(!allUsers){
+                    res.status(400).send(`There are no users in the database`);
+                    return;
+                }
+                res.json(allUsers);
+                }
+            } catch (err) {
+                res.status(500).send(err);
+            }
+        }
 }
 export default new UserController();
