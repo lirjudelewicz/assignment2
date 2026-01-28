@@ -34,6 +34,35 @@ class UserController{
             } catch (err) {
                 res.status(500).send(err);
             }
+    }
+
+    async update(req: Request, res: Response) {
+        try {
+            const { username, email, password } = req.body;
+            const userId = req.params.userId;
+            if (!userId || !username || !email || !password) {
+                res.status(400).send(`userId, username, email or password are required (full replace)`);
+                return;
+            }
+            else if (!await userModel.findById(userId)) {
+                res.status(404).send(`User not found`);
+                return;
+            }
+            const userExists = await userModel.findOne({ $or: [ { username }, { email } ] });
+            if (userExists) {
+                res.status(409).send(`Username or email already in use`);
+                return;
+            }
+
+            const user = await userModel.findByIdAndUpdate(userId, { userId, username, email, password }, { new: true });
+            if (!user) {
+                res.status(404).send(`User not found`);
+                return;
+            }
+            res.json(user);
+        } catch (err: any) {
+            res.status(500).send(err.message);
         }
+    }
 }
 export default new UserController();
