@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { userModel } from "../models/userModel";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { generateToken, hashPassword } from "../utils/authUtils";
 
 class AuthController {  
@@ -56,6 +57,35 @@ class AuthController {
             res.status(500).send(err.message);
         }
     }
+
+    async refreshToken(req: Request, res: Response){
+        try {
+            const refreshToken = req.body.refreshToken;
+            if (!refreshToken) {
+                return res.status(400).send("Refresh token is required");
+            }
+            const secret = process.env.JWT_SECRET || "default_secret";
+            const decoded = jwt.verify(refreshToken, secret) as { _id: string };
+            const user = await userModel.findById(decoded._id);
+            if (!user) {
+                return res.status(401).send("Invalid refresh token");
+            }
+            if (!user.refreshTokens.includes(refreshToken)) {
+                user.refreshTokens = [];
+                await user.save();
+                console.log(" **** Possible token theft for user:", user._id);
+                return res.status(401).send("Invalid refresh token");
+            }
+            const tokens = generateToken(decoded._id);
+            //remove old token from user refreshTokens and add the new one
+            user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+            user.refreshTokens.push(tokens.refreshToken);
+            await user.save();
+            res.status(200).json(tokens);
+        } catch (err) {
+            return res.status(401).send("Invalid refresh token");
+        }
+}
 
 }
 export default new AuthController();
