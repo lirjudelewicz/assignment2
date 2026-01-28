@@ -34,5 +34,22 @@ class PostController {
             res.status(500).send(err);
         }
     }
+
+    async getById(req: Request, res: Response){
+        try {
+            const postId = req.params.postId;
+            if(!postId){
+                res.status(404).json(`Bad Request - postId is required`);
+                return;
+            }
+            const post = await postModel.findById(postId);
+            if (!post) {
+            res.status(404).send(`Post not found`);
+            }
+            res.json(post);
+        } catch (err) {
+            res.status(500).send(err);
+        }
+        }
 }
 export default new PostController();
