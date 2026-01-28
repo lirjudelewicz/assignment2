@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import commentsRouter from "./routes/commentRoute";
 dotenv.config({path: "./.env"});
 
 const app  = express();
@@ -8,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-
+app.use("/comments", commentsRouter);
 
 const initApp = async () => {
     try{
