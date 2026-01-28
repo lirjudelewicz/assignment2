@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import postsRouter from "./routes/postRoutes";
 import mongoose from "mongoose";
-import userRouter from "./routes/userRoutes";
+import authRouter from "./routes/authRoutes";
 dotenv.config({path: "./.env"});
 
 const app  = express();
@@ -12,7 +12,7 @@ app.use(express.json());
 
 //routes
 app.use("/post", postsRouter);
-app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 const initApp = async () => {
     try{
