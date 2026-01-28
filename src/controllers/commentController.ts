@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { commentModel } from "../models/commentModel";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 class CommentController {
 
-    async create(req: Request, res: Response) {
+    async create(req: AuthRequest, res: Response) {
         try{
             const {postId, senderId, message} = req.body;
         
@@ -38,13 +39,18 @@ class CommentController {
         
     }
 
-    async update(req: Request, res: Response){
+    async update(req: AuthRequest, res: Response){
         try{
             const commentId = req.params.commentId;
             const updatedData = req.body;
             if(!commentId || !updatedData.postId || !updatedData.senderId || !updatedData.message){
                 res.statusCode = 400;
                 res.status(400).send(`Rejecting - commentId, postId, senderId, message are required`);
+                return;
+            }
+            if(req.user && req.user._id !== updatedData.senderId){
+                res.statusCode = 403;
+                res.status(403).send(`Forbidden - You can update only your own comments`);
                 return;
             }
             const comment = await commentModel.findByIdAndUpdate(commentId, updatedData, {new: true});
@@ -55,12 +61,18 @@ class CommentController {
         }
     }
 
-    async delete(req: Request, res: Response){
+    async delete(req: AuthRequest, res: Response){
         try{
             const commentId = req.params.commentId;
             if(!commentId){
                 res.statusCode = 400;
                 res.status(400).send(`Rejecting - commentId required`);
+                return;
+            }
+            const comment = await commentModel.findById(commentId);
+            if(req.user?._id !== comment?.senderId){
+                res.statusCode = 403;
+                res.status(403).send(`Forbidden - You can delete only your own comments`);
                 return;
             }
             const deletedComment = await commentModel.findByIdAndDelete(commentId);
