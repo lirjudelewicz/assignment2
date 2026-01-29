@@ -176,18 +176,6 @@ const options: swaggerJsdoc.Options = {
                     type: 'object',
                     required: ['refreshToken'],
                     properties: {
-                        _id: {
-                            type: 'string',
-                            description: 'User ID',
-                        },
-                        email: {
-                            type: 'string',
-                            description: 'User email',
-                        },
-                        username: {
-                            type: 'string',
-                            description: 'User username',
-                        },
                         refreshTokens: {
                             type: 'array',
                             items: { type: 'string' },
@@ -198,7 +186,11 @@ const options: swaggerJsdoc.Options = {
                 TokenResponse: {
                     type: 'object',
                     properties: {
-
+                        accessToken: {
+                            type: 'string',
+                            description: 'JWT access token',
+                            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                        },
                         refreshToken: {
                             type: 'string',
                             description: 'JWT refresh token',
@@ -238,7 +230,7 @@ const options: swaggerJsdoc.Options = {
             },
         ],
     },
-    apis: ['./src/routes/*.ts'],
+    apis: [],
 
 };
 
@@ -466,11 +458,11 @@ const manualPaths = {
                     'application/json': {
                         schema: {
                             type: 'object',
-                            required: ['message', 'userId', 'postId'],
+                            required: ['message', 'senderId', 'postId'],
                             properties: {
                                 message: { type: 'string' },
                                 postId: { type: 'string' },
-                                userId: { type: 'string' }
+                                senderId: { type: 'string' }
                             }
                         }
                     }
@@ -530,7 +522,7 @@ const manualPaths = {
                             properties: {
                                 message: { type: 'string' },
                                 postId: { type: 'string' },
-                                userId: { type: 'string' }
+                                senderId: { type: 'string' }
                             }
                         }
                     }
@@ -589,7 +581,6 @@ const manualPaths = {
     }
 };
 
-// Add manual paths to the options definition
 const completeOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: '3.0.0',
