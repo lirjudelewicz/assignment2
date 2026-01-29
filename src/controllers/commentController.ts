@@ -9,7 +9,7 @@ class CommentController {
             const {postId, message} = req.body;
         
             if(!postId || !message){
-                res.status(400).send(`postId, senderId, message are required`);
+                res.status(400).send(`postId, message are required`);
                 return;
             }
             const newComment = await commentModel.create({
@@ -43,8 +43,8 @@ class CommentController {
         try{
             const commentId = req.params.commentId;
             const updatedData = req.body;
-            if(!commentId || !updatedData.postId || !updatedData.senderId || !updatedData.message){
-                res.status(400).send(`Rejecting - commentId, postId, senderId, message are required`);
+            if(!commentId || !updatedData.postId || !updatedData.message){
+                res.status(400).send(`Rejecting - commentId, postId, message are required`);
                 return;
             }
             const comment = await commentModel.findById(commentId);

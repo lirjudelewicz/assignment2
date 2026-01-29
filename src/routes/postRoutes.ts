@@ -12,6 +12,12 @@ const postsRouter = Router();
  *       - Posts
  *     summary: Get all posts
  *     description: Retrieve all posts from the database, optionally filtered by query parameters
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully

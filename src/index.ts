@@ -6,12 +6,24 @@ import userRouter from "./routes/userRoutes";
 import commentsRouter from "./routes/commentRoute";
 import postsRouter from "./routes/postRoutes";
 import { swaggerSpec, swaggerUi } from "./swagger";
+import cors from "cors";
 dotenv.config({path: "./.env"});
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({ 
+    origin: "*", 
+    credentials: false,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+}));
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Expose-Headers", "Authorization");
+  next();
+});
 
 
 // Swagger setup
@@ -20,13 +32,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: 'Posts Comments & Users API Documentation'
 }));
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.setHeader("Access-Control-Allow-Methods", "*");
-  next();
-});
 
 // Routes setup
 app.use("/comment", commentsRouter);

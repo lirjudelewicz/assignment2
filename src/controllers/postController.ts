@@ -19,7 +19,7 @@ class PostController {
 
     async getAll(req: Request, res: Response)  {
         try {
-            if(req.query){
+            if(req.query && Object.keys(req.query).length > 0){
                 const posts = await postModel.find(req.query).sort({ createdAt: -1 });
                 res.json(posts);
                 return;
@@ -67,8 +67,8 @@ class PostController {
                 res.status(404).send(`Post not found`);
                 return;
             }
-            if (post.userId.toString() !== req.user?._id) {
-                res.status(404).send(`you ave no permissions to update post`);
+            if (post.userId !== req.user?._id) {
+                res.status(403).send(`You have no permissions to update post`);
                 return;
             }
             const updatedPost = await postModel.findByIdAndUpdate(postId, { userId: req.user?._id, title, content }, { new: true });
@@ -90,7 +90,7 @@ class PostController {
                 res.status(404).send(`Post not found`);
                 return;
             }
-            if (post.userId.toString() !== req.user?._id) {
+            if (post.userId !== req.user?._id) {
                 res.status(404).send(`you ave no permissions to delete post`);
                 return;
             }

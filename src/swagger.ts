@@ -86,7 +86,7 @@ const options: swaggerJsdoc.Options = {
                 },
                 Comment: {
                     type: 'object',
-                    required: ['message', 'postId', 'senderId'],
+                    required: ['message', 'postId', 'Id'],
                     properties: {
                         _id: {
                             type: 'string',
@@ -102,11 +102,6 @@ const options: swaggerJsdoc.Options = {
                             type: 'string',
                             description: 'ID of the post being commented on',
                             example: '507f1f77bcf86cd799439011',
-                        },
-                        senderId: {
-                            type: 'string',
-                            description: 'ID of the user who wrote the comment',
-                            example: '507f1f77bcf86cd799439012',
                         },
                     },
                 },
@@ -336,6 +331,19 @@ const manualPaths = {
         get: {
             tags: ['Posts'],
             summary: 'Get all posts',
+            requestBody: {
+                required: false,
+                content: {
+                    'application/json': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                userId: { type: 'string' }
+                            }
+                        }
+                    }
+                }
+            },
             responses: {
                 200: {
                     description: 'List of posts',
@@ -586,7 +594,6 @@ const manualPaths = {
     }
 };
 
-// Add manual paths to the options definition
 const completeOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: '3.0.0',
@@ -594,6 +601,7 @@ const completeOptions: swaggerJsdoc.Options = {
         servers: options.definition!.servers,
         components: options.definition!.components,
         tags: options.definition!.tags,
+        security: [{ bearerAuth: [] }],
         paths: manualPaths
     },
     apis: ['./src/routes/*.ts'],

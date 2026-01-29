@@ -100,7 +100,6 @@ Authorization: Bearer your_access_token_here
 
 {
   "postId": "post_id_here",
-  "senderId": "sender_user_id_here",
   "message": "Great post!"
 }
 
@@ -120,7 +119,6 @@ Authorization: Bearer your_access_token_here
 
 {
   "postId": "post_id_here",
-  "senderId": "user_id_here",
   "message": "Updated comment message"
 }
 
@@ -130,9 +128,6 @@ DELETE http://localhost:3000/comment/comment_id_here
 Content-Type: application/json
 Authorization: Bearer your_access_token_here
 
-{
-  "senderId": "sender_user_id_here"
-}
 
 ################################################################################
 # USERS

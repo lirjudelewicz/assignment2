@@ -22,15 +22,11 @@ const commentsRouter = Router();
  *             type: object
  *             required:
  *               - postId
- *               - senderId
  *               - message
  *             properties:
  *               postId:
  *                 type: string
  *                 example: "507f1f77bcf86cd799439011"
- *               senderId:
- *                 type: string
- *                 example: "507f1f77bcf86cd799439012"
  *               message:
  *                 type: string
  *                 example: "Great post!"
@@ -104,14 +100,9 @@ commentsRouter.get("/:commentId", commentController.getById.bind(commentControll
  *             type: object
  *             required:
  *               - postId
- *               - senderId
  *               - message
  *             properties:
  *               postId:
- *                 type: string
- *               senderId:
- *                 type: string
- *               message:
  *                 type: string
  *     responses:
  *       200:
