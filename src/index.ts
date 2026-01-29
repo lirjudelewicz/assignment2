@@ -15,7 +15,18 @@ app.use(express.json());
 
 
 // Swagger setup
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Posts Comments & Users API Documentation'
+}));
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Methods", "*");
+  next();
+});
 
 // Routes setup
 app.use("/comment", commentsRouter);
@@ -45,4 +56,6 @@ initApp().then(() =>{
     server.on("error", (error: any) => {
         console.log("Error occurred, server can't start", error);
     });
-})
+});
+
+export default app;

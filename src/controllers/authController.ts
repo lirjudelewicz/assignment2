@@ -9,7 +9,7 @@ class AuthController {
     async register(req: Request, res: Response) {
         try{
             const { username, email, password } = req.body;
-            if ( !email || !password) {
+            if ( !username ||!email || !password) {
                 res.status(400).send(`Bad Request - username, email, password are required`);
                 return;
             }
@@ -33,7 +33,7 @@ class AuthController {
     async login(req: Request, res: Response) {
         try{
             const { username, email, password } = req.body;
-            if (!email && !username || !password) {
+            if ((!email && !username) || !password) {
                 res.status(400).send(`Bad Request - email and password are required`);
                 return;
             }

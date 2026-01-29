@@ -5,12 +5,12 @@ import { Request, Response } from "express";
 class PostController {
     async create(req: AuthRequest, res: Response) {
         try {
-            const { userId, title, content } = req.body;
-            if (!userId || !title || !content) {
-                res.status(400).send(`Bad Request - userId, title, content are required`);
+            const { title, content } = req.body;
+            if (!title || !content) {
+                res.status(400).send(`Bad Request - title, content are required`);
                 return;
             }
-            const post = await postModel.create({ userId, title, content });
+            const post = await postModel.create({ userId: req.user?._id, title, content });
             res.json(post);
         } catch (err) {
             res.status(500).send(err);
@@ -56,10 +56,10 @@ class PostController {
 
     async replace(req: AuthRequest, res: Response){
         try {
-            const { userId, title, content } = req.body;
+            const {title, content } = req.body;
             const postId = req.params.postId;
-            if (!postId ||!userId || !title || !content) {
-            res.status(400).send(`postId userId, title, content are required (full replace)`);
+            if (!postId || !title || !content) {
+            res.status(400).send(`postId title, content are required (full replace)`);
             return;
             }
             const post = await postModel.findById(postId);
@@ -71,7 +71,7 @@ class PostController {
                 res.status(404).send(`you ave no permissions to update post`);
                 return;
             }
-            const updatedPost = await postModel.findByIdAndUpdate(postId, { userId, title, content }, { new: true });
+            const updatedPost = await postModel.findByIdAndUpdate(postId, { userId: req.user?._id, title, content }, { new: true });
             res.json(updatedPost);
         } catch (err: any) {
             res.status(500).send(err.message);
@@ -81,7 +81,6 @@ class PostController {
     async delete(req: AuthRequest, res: Response){
         try {
             const postId = req.params.postId;
-            const userId = req.body.userId;
             if (!postId) {
                 res.status(400).send(`Bad Request - postId is required`);
                 return;

@@ -12,7 +12,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
-    const secret = process.env.JWT_SECRET || "dedault";
+    const secret = process.env.JWT_SECRET || "default_secret";
     try {
         const decoded = jwt.verify(token, secret) as { _id: string };
         req.user = { _id: decoded._id };

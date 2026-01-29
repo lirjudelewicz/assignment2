@@ -6,14 +6,14 @@ class CommentController {
 
     async create(req: AuthRequest, res: Response) {
         try{
-            const {postId, senderId, message} = req.body;
+            const {postId, message} = req.body;
         
-            if(!postId || !senderId || !message){
+            if(!postId || !message){
                 res.status(400).send(`postId, senderId, message are required`);
                 return;
             }
             const newComment = await commentModel.create({
-                postId, senderId, message
+                postId, senderId: req.user?._id, message
             });
             console.log(`Succesfully added a new comment id: [${newComment._id}] to post id: [${postId}]`);
             res.json(newComment);
@@ -44,18 +44,18 @@ class CommentController {
             const commentId = req.params.commentId;
             const updatedData = req.body;
             if(!commentId || !updatedData.postId || !updatedData.senderId || !updatedData.message){
-                res.statusCode = 400;
                 res.status(400).send(`Rejecting - commentId, postId, senderId, message are required`);
                 return;
             }
-            if(req.user && req.user._id !== updatedData.senderId){
+            const comment = await commentModel.findById(commentId);
+            if(req.user?._id !== comment?.senderId){
                 res.statusCode = 403;
                 res.status(403).send(`Forbidden - You can update only your own comments`);
                 return;
             }
-            const comment = await commentModel.findByIdAndUpdate(commentId, updatedData, {new: true});
+            const updatedComment = await commentModel.findByIdAndUpdate(commentId, updatedData, {new: true});
             console.log(`Succesfully updated comment id: [${commentId}]`);
-            res.json(comment);
+            res.json(updatedComment);
         }catch(err: any){
             res.status(500).send(`Error reading comment ended with error: ${err.message}`);
         }

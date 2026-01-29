@@ -27,7 +27,7 @@ const options: swaggerJsdoc.Options = {
             schemas: {
                 Post: {
                     type: 'object',
-                    required: ['title', 'content', 'userId'],
+                    required: ['title', 'content'],
                     properties: {
                         _id: {
                             type: 'string',
@@ -360,11 +360,10 @@ const manualPaths = {
                     'application/json': {
                         schema: {
                             type: 'object',
-                            required: ['userId', 'title', 'content'],
+                            required: ['title', 'content'],
                             properties: {
                                 title: { type: 'string' },
                                 content: { type: 'string' },
-                                userId: { type: 'string' }
                             }
                         }
                     }
@@ -466,11 +465,10 @@ const manualPaths = {
                     'application/json': {
                         schema: {
                             type: 'object',
-                            required: ['message', 'userId', 'postId'],
+                            required: ['message', , 'postId'],
                             properties: {
                                 message: { type: 'string' },
                                 postId: { type: 'string' },
-                                userId: { type: 'string' }
                             }
                         }
                     }
@@ -530,7 +528,6 @@ const manualPaths = {
                             properties: {
                                 message: { type: 'string' },
                                 postId: { type: 'string' },
-                                userId: { type: 'string' }
                             }
                         }
                     }

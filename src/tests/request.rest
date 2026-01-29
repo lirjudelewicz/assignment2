@@ -1,17 +1,165 @@
 ################################################################################
-# POSTS
+# AUTHENTICATION
 ################################################################################
+
 ###
-#Create Post
-POST http://localhost:3000/post
+# Register a new user
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "senderId": "id1",
-  "title": "Post 1",
-  "content": "Hello from sender1"
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
 }
 
 ###
-# Get All Posts  
+# Login user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+# Refresh token
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "your_refresh_token_here"
+}
+
+###
+# Logout user
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "refreshToken": "your_refresh_token_here"
+}
+
+################################################################################
+# POSTS
+################################################################################
+
+###
+# Get all posts
 GET http://localhost:3000/post
+
+###
+# Create a new post
+POST http://localhost:3000/post
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "userId": "user_id_here",
+  "title": "My First Post",
+  "content": "This is the content of my first post"
+}
+
+###
+# Get post by ID
+GET http://localhost:3000/post/post_id_here
+
+###
+# Update a post
+PUT http://localhost:3000/post/post_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "userId": "user_id_here",
+  "title": "Updated Post Title",
+  "content": "Updated post content"
+}
+
+###
+# Delete a post
+DELETE http://localhost:3000/post/post_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "userId": "user_id_here"
+}
+
+################################################################################
+# COMMENTS
+################################################################################
+
+###
+# Create a new comment
+POST http://localhost:3000/comment
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "postId": "post_id_here",
+  "senderId": "sender_user_id_here",
+  "message": "Great post!"
+}
+
+###
+# Get comment by ID
+GET http://localhost:3000/comment/comment_id_here
+
+###
+# Get comments by post ID
+GET http://localhost:3000/comment/post/post_id_here
+
+###
+# Update a comment
+PUT http://localhost:3000/comment/comment_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "postId": "post_id_here",
+  "senderId": "user_id_here",
+  "message": "Updated comment message"
+}
+
+###
+# Delete a comment
+DELETE http://localhost:3000/comment/comment_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "senderId": "sender_user_id_here"
+}
+
+################################################################################
+# USERS
+################################################################################
+
+###
+# Get all users
+GET http://localhost:3000/user
+
+###
+# Get user by ID
+POST http://localhost:3000/user/user_id_here
+
+###
+# Update a user
+PUT http://localhost:3000/user/user_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
+
+{
+  "username": "updated_username",
+  "email": "updated@example.com",
+  "password": "newpassword123"
+}
+
+###
+# Delete a user
+DELETE http://localhost:3000/user/user_id_here
+Content-Type: application/json
+Authorization: Bearer your_access_token_here
