@@ -5,6 +5,7 @@ import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import commentsRouter from "./routes/commentRoute";
 import postsRouter from "./routes/postRoutes";
+import { swaggerSpec, swaggerUi } from "./swagger";
 dotenv.config({path: "./.env"});
 
 const app  = express();
@@ -12,6 +13,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+
+// Swagger setup
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Routes setup
 app.use("/comment", commentsRouter);
 app.use("/post", postsRouter);
 app.use("/auth", authRouter);
@@ -33,12 +39,10 @@ const initApp = async () => {
 }
 
 initApp().then(() =>{
-    app.listen(PORT, (error) =>{
-        if(!error)
-            console.log("Server is running, listening on port "+ PORT);
-        else 
-            console.log("Error occurred, server can't start", error);
-        }
-    );
-
+    const server = app.listen(PORT, () =>{
+        console.log("Server is running, listening on port "+ PORT);
+    });
+    server.on("error", (error: any) => {
+        console.log("Error occurred, server can't start", error);
+    });
 })
