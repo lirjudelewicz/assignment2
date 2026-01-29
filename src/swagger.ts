@@ -53,7 +53,7 @@ const options: swaggerJsdoc.Options = {
                 },
                 User: {
                     type: 'object',
-                    required: ['email', 'password'],
+                    required: ['email', 'password', 'username'],
                     properties: {
                         _id: {
                             type: 'string',
@@ -71,11 +71,22 @@ const options: swaggerJsdoc.Options = {
                             description: 'User password (hashed)',
                             example: 'password123',
                         },
+                        username: {
+                            type: 'string',
+                            description: 'User username',
+                            example: 'john_doe',
+                        },
+                        refreshTokens: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            description: 'Array of refresh tokens',
+                        },
+
                     },
                 },
                 Comment: {
                     type: 'object',
-                    required: ['message', 'postId', 'userId'],
+                    required: ['message', 'postId', 'senderId'],
                     properties: {
                         _id: {
                             type: 'string',
@@ -92,7 +103,7 @@ const options: swaggerJsdoc.Options = {
                             description: 'ID of the post being commented on',
                             example: '507f1f77bcf86cd799439011',
                         },
-                        userId: {
+                        senderId: {
                             type: 'string',
                             description: 'ID of the user who wrote the comment',
                             example: '507f1f77bcf86cd799439012',
@@ -114,11 +125,18 @@ const options: swaggerJsdoc.Options = {
                             description: 'User password',
                             example: 'password123',
                         },
+                        username: {
+                            type: 'string',
+                            description: 'User username',
+                            example: 'john_doe',
+
+                        },
+
                     },
                 },
                 RegisterRequest: {
                     type: 'object',
-                    required: ['email', 'password'],
+                    required: ['email', 'password', 'username'],
                     properties: {
                         email: {
                             type: 'string',
@@ -131,6 +149,11 @@ const options: swaggerJsdoc.Options = {
                             minLength: 6,
                             description: 'User password (minimum 6 characters)',
                             example: 'password123',
+                        },
+                        username: {
+                            type: 'string',
+                            description: 'User username',
+                            example: 'john_doe',
                         },
                     },
                 },
@@ -153,6 +176,29 @@ const options: swaggerJsdoc.Options = {
                     type: 'object',
                     required: ['refreshToken'],
                     properties: {
+                        _id: {
+                            type: 'string',
+                            description: 'User ID',
+                        },
+                        email: {
+                            type: 'string',
+                            description: 'User email',
+                        },
+                        username: {
+                            type: 'string',
+                            description: 'User username',
+                        },
+                        refreshTokens: {
+                            type: 'array',
+                            items: { type: 'string' },
+                            description: 'Array of refresh tokens',
+                        },
+                    },
+                },
+                TokenResponse: {
+                    type: 'object',
+                    properties: {
+
                         refreshToken: {
                             type: 'string',
                             description: 'JWT refresh token',
@@ -192,10 +238,10 @@ const options: swaggerJsdoc.Options = {
             },
         ],
     },
-    apis: [],
+    apis: ['./src/routes/*.ts'],
+
 };
 
-// Manually define paths since JSDoc parsing has issues
 const manualPaths = {
     '/auth/register': {
         post: {
@@ -553,7 +599,8 @@ const completeOptions: swaggerJsdoc.Options = {
         tags: options.definition!.tags,
         paths: manualPaths
     },
-    apis: []
+    apis: ['./src/routes/*.ts'],
+
 };
 
 const swaggerSpec = swaggerJsdoc(completeOptions);
